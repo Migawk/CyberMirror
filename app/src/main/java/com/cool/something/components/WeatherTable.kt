@@ -9,11 +9,14 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import com.cool.something.R
 import com.cool.something.logic.Day
+import com.cool.something.logic.getDay
 import com.cool.something.logic.getWeather
+import com.cool.something.logic.parseDate
+import com.cool.something.network.ForecastDay
 import com.cool.something.ui.theme.Txt
 
 @Composable
-fun WeatherTable() {
+fun WeatherTable(days: List<ForecastDay>) {
     Box(
         modifier = Modifier
             .border(3.dp, color = colorResource(R.color.blue))
@@ -54,27 +57,27 @@ fun WeatherTable() {
             }
             WeatherRow(
                 Day(
-                    weekDay = "Wednesday",
-                    monthDay = 25,
-                    month = "June"
+                    getDay(parseDate(days[1].date)).weekDay,
+                    getDay(parseDate(days[1].date)).month,
+                    getDay(parseDate(days[1].date)).monthDay,
                 ),
-                "rain",
-                18f,
-                16f,
-                20f,
-                listOf("03:44", "22:33")
+                days[1].day.condition.text,
+                days[1].day.maxtemp_c,
+                days[1].day.avgtemp_c,
+                days[1].day.totalprecip_mm,
+                listOf(days[1].astro.sunrise, days[1].astro.sunset)
             )
             WeatherRow(
                 Day(
-                    weekDay = "Wednesday",
-                    monthDay = 25,
-                    month = "June"
+                    getDay(parseDate(days[2].date)).weekDay,
+                    getDay(parseDate(days[2].date)).month,
+                    getDay(parseDate(days[2].date)).monthDay,
                 ),
-                "rain",
-                18f,
-                16f,
-                20f,
-                listOf("03:44", "22:33")
+                days[2].day.condition.text,
+                days[2].day.maxtemp_c,
+                days[2].day.avgtemp_c,
+                days[2].day.totalprecip_mm,
+                listOf(days[2].astro.sunrise, days[2].astro.sunset)
             )
         }
     }

@@ -5,6 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -17,9 +19,15 @@ import com.cool.something.ui.theme.Txt
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import com.cool.something.R
+import com.cool.something.network.Rates
+import androidx.compose.runtime.*
+import com.cool.something.logic.formatFloat
+import com.cool.something.network.Exchanger
+import com.cool.something.network.ForecastDay
+import kotlinx.coroutines.delay
 
 @Composable
-fun LeftSide() {
+fun LeftSide(day: ForecastDay) {
     val calendar = Calendar.getInstance()
     val formatter = SimpleDateFormat("yyyy, MMMM")
 
@@ -32,11 +40,27 @@ fun LeftSide() {
     calendar.add(Calendar.DAY_OF_YEAR, 1)
     val dayAfterTomorrow = getDay(calendar)
 
+    var usd by remember { mutableStateOf<Rates?>(null) }
+    var eur by remember { mutableStateOf<Rates?>(null) }
+
+    LaunchedEffect(Unit) {
+        val exchClient = Exchanger()
+
+        while(true) {
+            usd = exchClient.getValue("USD").conversion_rates
+            eur = exchClient.getValue("EUR").conversion_rates
+
+            val h: Long = 1000 * 60 * 60
+            delay(h * 12) // half of the day.
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxHeight()
             .border(width = 3.dp, color = Color(0xFFF8E602))
             .padding(horizontal = 12.dp, vertical = 4.dp)
+            .fillMaxWidth(0.25f)
     ) {
         Column(
             verticalArrangement = Arrangement.SpaceBetween,
@@ -72,19 +96,19 @@ fun LeftSide() {
                 }
             }
             Column { // Currencies
-                AdvancedElement(
-                    { Txt("€", fontSize = 20, bold = true, color = Color(0xFF2A252B),) },
-                    { Row ( horizontalArrangement = Arrangement.SpaceBetween) {
-                        Txt("10,46 :-")
-                        Txt("48,01 ₴")
+                if(eur != null) AdvancedElement(
+                    { Txt("€", fontSize = 20, bold = true, color = Color(0xFF2A252B)) },
+                    { Row ( horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+                        Txt("${formatFloat(eur!!.SEK)} :-")
+                        Txt("${formatFloat(eur!!.UAH)} ₴")
                     } },
                     false
                 )
-                AdvancedElement(
-                    { Txt("\$", fontSize = 20, bold = true, color = Color(0xFF2A252B),) },
-                    { Row ( horizontalArrangement = Arrangement.SpaceBetween) {
-                        Txt("10,46 :-")
-                        Txt("48,01 ₴")
+                if(usd != null ) AdvancedElement(
+                    { Txt("\$", fontSize = 20, bold = true, color = Color(0xFF2A252B)) },
+                    { Row ( horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+                        Txt("${formatFloat(usd!!.SEK)} :-")
+                        Txt("${formatFloat(usd!!.UAH)} ₴")
                     } },
                     false
                 )
@@ -97,10 +121,10 @@ fun LeftSide() {
 
                         )
                     },
-                    { Row ( horizontalArrangement = Arrangement.SpaceBetween) {
-                        Txt("03:36")
+                    { Row ( horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+                        Txt(day.astro.sunrise)
                         Txt("---")
-                        Txt("22:10")
+                        Txt(day.astro.sunset)
                     } }
                 )
             }
@@ -113,7 +137,7 @@ fun UnitElement(ico: String, title: String, description: String, isPrimary:Boole
     var globalMod: Modifier = Modifier
     if(!isPrimary) {
         globalMod = Modifier
-            .scale(0.8f)
+            .scale(0.9f)
             .alpha(0.4f)
     }
     Row (
@@ -147,7 +171,7 @@ fun AdvancedElement(ico: @Composable () -> Unit, content: @Composable () -> Unit
     var globalMod: Modifier = Modifier
     if(!isPrimary) {
         globalMod = Modifier
-            .scale(0.8f)
+            .scale(0.9f)
             .alpha(0.4f)
     }
 

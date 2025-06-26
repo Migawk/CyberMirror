@@ -1,6 +1,9 @@
 package com.cool.something.logic
 
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
+
 
 data class Day (
     val weekDay: String,
@@ -45,4 +48,15 @@ fun getDay(calendar: Calendar): Day {
         month = month,
         monthDay = monthDay
     )
+}
+
+val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+fun parseDate(dateString: String): Calendar {
+    val date: Date = dateFormat.parse(dateString) ?: Date(10000000)
+
+    // Create a Calendar instance and set the date
+    val calendar: Calendar = Calendar.getInstance()
+    calendar.time = date
+
+    return calendar
 }
