@@ -42,6 +42,7 @@ fun LeftSide() {
             verticalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .padding(4.dp)
+                .fillMaxHeight()
         ) { // global
             Column { // current date and calendar
                 Txt(

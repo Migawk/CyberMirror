@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.cool.something.R
 import com.cool.something.logic.getWeather
 import com.cool.something.ui.theme.Txt
+import java.util.Calendar
 
 @Composable
 fun RightSide() {
@@ -36,7 +37,7 @@ fun RightSide() {
             modifier = Modifier
                 .padding(4.dp)
                 .fillMaxHeight()
-        ) { // global
+        ) { // global   
             Box(
                 modifier = Modifier.weight(1f)
             ) {
@@ -46,6 +47,16 @@ fun RightSide() {
                 modifier = Modifier.weight(1f)
             ) {
                 WeatherTable()
+            }
+            Box(
+                modifier = Modifier.weight(1f)
+            ) {
+                NewsFeed()
+            }
+            Box(
+                modifier = Modifier.weight(1f)
+            ) {
+                InfoField()
             }
         }
     }
@@ -98,6 +109,9 @@ fun FaceWeather() {
         Row (
             modifier = Modifier.weight(0.65f)
         ) {
+            val currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+            val timing = colorResource(R.color.yellow)
+
             Box (
                 modifier = Modifier.weight(1f)
             ) {
@@ -106,7 +120,8 @@ fun FaceWeather() {
                     "cloud",
                     23.7f,
                     24.7f,
-                    24f
+                    24f,
+                    if(currentHour > 0 && currentHour <= 9) timing else null
                 )
             }
             Box (
@@ -118,7 +133,7 @@ fun FaceWeather() {
                     23.7f,
                     24.7f,
                     24f,
-                    colorResource(R.color.blue)
+                    if(currentHour >= 10 && currentHour <= 13) timing else colorResource(R.color.blue)
                 )
             }
             Box (
@@ -129,7 +144,8 @@ fun FaceWeather() {
                     "thunder",
                     23.7f,
                     24.7f,
-                    24f
+                    24f,
+                    if(currentHour >= 14 && currentHour <= 19) timing else null
                 )
             }
             Box (
@@ -141,7 +157,7 @@ fun FaceWeather() {
                     23.7f,
                     24.7f,
                     24f,
-                    colorResource(R.color.blue)
+                    if(currentHour >= 20 && currentHour <= 24) timing else colorResource(R.color.blue)
                 )
             }
         }
@@ -155,13 +171,15 @@ fun WeatherCell(
     temp: Float,
     feels: Float,
     precipiation: Float,
-    bg: Color = Color(0x00000000)
+    bg: Color?
 ) {
+    val displayBg = bg ?: Color(0x00000000)
+
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
-            .background(bg)
+            .background(displayBg)
             .fillMaxSize()
             .padding(vertical = 12.dp),
     ) {

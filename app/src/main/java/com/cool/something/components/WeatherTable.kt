@@ -3,6 +3,7 @@ package com.cool.something.components
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
@@ -17,13 +18,13 @@ fun WeatherTable() {
         modifier = Modifier
             .border(3.dp, color = colorResource(R.color.blue))
             .padding(8.dp)
+            .fillMaxSize()
     ) {
-        Row {
+        Column {
             Row(
                 modifier = Modifier
                     .background(colorResource(R.color.yellow))
                     .padding(4.dp)
-                    .fillMaxWidth()
             ) {
                 Txt(
                     "Day",
@@ -51,22 +52,30 @@ fun WeatherTable() {
                 )
 
             }
-            Row(
-
-            ) {
-                WeatherRow(
-                    Day(
-                        weekDay = "Wednesday",
-                        monthDay = 25,
-                        month = "June"
-                    ),
-                    "rain",
-                    18f,
-                    16f,
-                    20f,
-                    listOf("03:44", "22:33")
-                )
-            }
+            WeatherRow(
+                Day(
+                    weekDay = "Wednesday",
+                    monthDay = 25,
+                    month = "June"
+                ),
+                "rain",
+                18f,
+                16f,
+                20f,
+                listOf("03:44", "22:33")
+            )
+            WeatherRow(
+                Day(
+                    weekDay = "Wednesday",
+                    monthDay = 25,
+                    month = "June"
+                ),
+                "rain",
+                18f,
+                16f,
+                20f,
+                listOf("03:44", "22:33")
+            )
         }
     }
 }
@@ -81,7 +90,8 @@ fun WeatherRow(
     suntimes: List<String>
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Row (
             modifier = Modifier.weight(1f),

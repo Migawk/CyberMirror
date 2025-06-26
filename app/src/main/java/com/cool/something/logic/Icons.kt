@@ -12,6 +12,7 @@ fun getWeather(weather: String): Painter {
         "cloud" -> R.drawable.cloud
         "thunder" -> R.drawable.thunder
         "snow" -> R.drawable.snow
+        "rain" -> R.drawable.rain
         else -> R.drawable.question
     }
 

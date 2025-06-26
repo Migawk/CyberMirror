@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.*
 
 @Composable
@@ -13,13 +14,15 @@ fun Txt(
     modifier: Modifier = Modifier,
     fontSize: Int = 16,
     bold: Boolean = false,
-    color: Color = Color(0xFFFFFFFF)
+    color: Color = Color(0xFFFFFFFF),
+    align: TextAlign = TextAlign.Left
 ) {
     Text(
         text,
         color = color,
         modifier = modifier,
         fontSize = fontSize.sp,
-        fontWeight = if(bold) FontWeight.Bold else FontWeight.Normal
+        fontWeight = if(bold) FontWeight.Bold else FontWeight.Normal,
+        textAlign = align
     )
 }
