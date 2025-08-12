@@ -16,12 +16,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowCompat
 import com.cool.something.components.LeftSide
 import com.cool.something.components.RightSide
 import com.cool.something.network.CommonWeatherResponse
 import com.cool.something.network.Weather
 import com.cool.something.ui.theme.Txt
 import kotlinx.coroutines.delay
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 
 class MainActivity : ComponentActivity() {
 
@@ -30,8 +33,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        setContent {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        WindowInsetsControllerCompat(window, window.decorView).apply {
+            hide(WindowInsetsCompat.Type.statusBars())
+            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
 
+        setContent {
             var weather by remember { mutableStateOf<CommonWeatherResponse?>(null) }
             var error by remember { mutableStateOf<String?>(null) }
 
