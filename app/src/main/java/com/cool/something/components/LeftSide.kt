@@ -1,9 +1,11 @@
 package com.cool.something.components
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,6 +28,7 @@ import com.cool.something.network.Exchanger
 import com.cool.something.network.ForecastDay
 import kotlinx.coroutines.delay
 
+@SuppressLint("DefaultLocale")
 @Composable
 fun LeftSide(day: ForecastDay) {
     val calendar = Calendar.getInstance()
@@ -43,6 +46,8 @@ fun LeftSide(day: ForecastDay) {
     var usd by remember { mutableStateOf<Rates?>(null) }
     var eur by remember { mutableStateOf<Rates?>(null) }
 
+    var time by remember { mutableStateOf<Calendar?>(null) }
+
     LaunchedEffect(Unit) {
         val exchClient = Exchanger()
 
@@ -54,28 +59,65 @@ fun LeftSide(day: ForecastDay) {
             delay(h * 12) // half of the day.
         }
     }
+    LaunchedEffect(Unit) {
+        while(true){
+            time = Calendar.getInstance()
+            delay(1000)
+        }
+    }
 
     Box(
         modifier = Modifier
             .fillMaxHeight()
             .border(width = 3.dp, color = Color(0xFFF8E602))
-            .padding(horizontal = 12.dp, vertical = 4.dp)
+            .padding(4.dp)
             .fillMaxWidth(0.25f)
     ) {
         Column(
             verticalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .padding(4.dp)
-                .fillMaxHeight()
+                .fillMaxHeight(),
         ) { // global
-            Column { // current date and calendar
-                Txt(
-                    formattedDate,
-                    color = Color(0xFFFFFFFF),
-                    modifier = Modifier.padding(bottom = 12.dp),
-                    fontSize = 20,
-                    bold = true
-                )
+            Column {
+                Row ( // current date and time
+                    modifier = Modifier
+                        .background(Color(0xFF00F0FF))
+                        .fillMaxWidth(1f),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row (
+                        modifier = Modifier
+                            .background(Color(0xFFF8E602))
+                            .padding(4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Txt(
+                            "${String.format("%02d", time?.get(Calendar.HOUR_OF_DAY))}:${String.format("%02d", time?.get(Calendar.MINUTE))}",
+                            color = Color(0xFF2A252B),
+                            fontSize = 36,
+                            bold = true
+                        )
+                        Box(
+                            modifier = Modifier
+                                .size(5.dp)
+                                .background(Color(0xAA4C484D), shape = CircleShape)
+                        )
+                        Txt(
+                            String.format("%02d", time?.get(Calendar.SECOND)),
+                            color = Color(0xAA4C484D),
+                            fontSize = 28,
+                        )
+                    }
+                    Txt(
+                        formattedDate,
+                        color = Color(0xFF2A252B),
+                        fontSize = 20,
+                        bold = true,
+                        modifier = Modifier.padding(start = 4.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.height(12.dp))
                 Column {
                     UnitElement(
                         today.monthDay.toString(),
